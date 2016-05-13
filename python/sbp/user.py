@@ -106,7 +106,104 @@ maximum length of 255 bytes per message.
     d.update(j)
     return d
     
+SBP_MSG_USER_PWM = 0x0801
+class MsgUserPwm(SBP):
+  """SBP class for message MSG_USER_PWM (0x0801).
+
+  You can have MSG_USER_PWM inherit its fields directly
+  from an inherited SBP object, or construct it inline using a dict
+  of its fields.
+
+  
+  This message contain 4 pwm channels in percent.
+
+
+  Parameters
+  ----------
+  sbp : SBP
+    SBP parent object to inherit from.
+  pwm0 : int
+    pwm raw 0
+  pwm1 : int
+    pwm raw 1
+  pwm2 : int
+    pwm raw 2
+  pwm3 : int
+    pwm raw 3
+  sender : int
+    Optional sender ID, defaults to SENDER_ID (see sbp/msg.py).
+
+  """
+  _parser = Struct("MsgUserPwm",
+                   ULInt8('pwm0'),
+                   ULInt8('pwm1'),
+                   ULInt8('pwm2'),
+                   ULInt8('pwm3'),)
+  __slots__ = [
+               'pwm0',
+               'pwm1',
+               'pwm2',
+               'pwm3',
+              ]
+
+  def __init__(self, sbp=None, **kwargs):
+    if sbp:
+      super( MsgUserPwm,
+             self).__init__(sbp.msg_type, sbp.sender, sbp.length,
+                            sbp.payload, sbp.crc)
+      self.from_binary(sbp.payload)
+    else:
+      super( MsgUserPwm, self).__init__()
+      self.msg_type = SBP_MSG_USER_PWM
+      self.sender = kwargs.pop('sender', SENDER_ID)
+      self.pwm0 = kwargs.pop('pwm0')
+      self.pwm1 = kwargs.pop('pwm1')
+      self.pwm2 = kwargs.pop('pwm2')
+      self.pwm3 = kwargs.pop('pwm3')
+
+  def __repr__(self):
+    return fmt_repr(self)
+
+  @staticmethod
+  def from_json(s):
+    """Given a JSON-encoded string s, build a message object.
+
+    """
+    d = json.loads(s)
+    return MsgUserPwm.from_json_dict(d)
+
+  @staticmethod
+  def from_json_dict(d):
+    sbp = SBP.from_json_dict(d)
+    return MsgUserPwm(sbp, **d)
+
+ 
+  def from_binary(self, d):
+    """Given a binary payload d, update the appropriate payload fields of
+    the message.
+
+    """
+    p = MsgUserPwm._parser.parse(d)
+    for n in self.__class__.__slots__:
+      setattr(self, n, getattr(p, n))
+
+  def to_binary(self):
+    """Produce a framed/packed SBP message.
+
+    """
+    c = containerize(exclude_fields(self))
+    self.payload = MsgUserPwm._parser.build(c)
+    return self.pack()
+
+  def to_json_dict(self):
+    self.to_binary()
+    d = super( MsgUserPwm, self).to_json_dict()
+    j = walk_json_dict(exclude_fields(self))
+    d.update(j)
+    return d
+    
 
 msg_classes = {
   0x0800: MsgUserData,
+  0x0801: MsgUserPwm,
 }

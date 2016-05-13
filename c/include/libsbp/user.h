@@ -37,6 +37,19 @@ typedef struct __attribute__((packed)) {
 } msg_user_data_t;
 
 
+/** User PWM data
+ *
+ * This message contain 4 pwm channels in percent.
+ */
+#define SBP_MSG_USER_PWM  0x0801
+typedef struct __attribute__((packed)) {
+  u8 pwm0;    /**< pwm raw 0 */
+  u8 pwm1;    /**< pwm raw 1 */
+  u8 pwm2;    /**< pwm raw 2 */
+  u8 pwm3;    /**< pwm raw 3 */
+} msg_user_pwm_t;
+
+
 /** \} */
 
 #endif /* LIBSBP_USER_MESSAGES_H */

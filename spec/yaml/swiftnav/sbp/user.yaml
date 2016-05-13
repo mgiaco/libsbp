@@ -29,3 +29,21 @@ definitions:
             fill: u8
             desc: User data payload
 
+ - MSG_USER_PWM:
+    id: 0x0801
+    short_desc: User PWM data
+    desc: |
+        This message contain 4 pwm channels in percent.
+    fields:
+        - pwm0:
+            type: u8
+            desc: pwm raw 0
+        - pwm1:
+            type: u8
+            desc: pwm raw 1
+        - pwm2:
+            type: u8
+            desc: pwm raw 2
+        - pwm3:
+            type: u8
+            desc: pwm raw 3
