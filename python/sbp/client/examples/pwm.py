@@ -3,6 +3,7 @@ from sbp.client import Handler, Framer
 from sbp.user import *
 import argparse
 
+
 def main():
     parser = argparse.ArgumentParser(description="Swift Navigation SBP Example.")
     parser.add_argument("-p", "--port",
@@ -11,10 +12,11 @@ def main():
     args = parser.parse_args()
 
     # Open a connection to Piksi using the default baud rate (1Mbaud)
-    with PySerialDriver(args.port[0], baud=2400) as driver:
+    with PySerialDriver(args.port[0], baud=115200) as driver:
         with Handler(Framer(driver.read, driver.write, verbose=True)) as source:
-            msg = MsgUserPwm(pwm0=1, pwm1=2, pwm2=3, pwm3=4)
+            msg = MsgUserPwm(pwm0=255, pwm1=70, pwm2=255, pwm3=255, )
             source(msg)
+            print "send"
 
 if __name__ == "__main__":
     main()

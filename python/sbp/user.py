@@ -197,7 +197,7 @@ class MsgUserPwm(SBP):
 
   def to_json_dict(self):
     self.to_binary()
-    d = super( MsgUserPwm, self).to_json_dict()
+    d = super(MsgUserPwm, self).to_json_dict()
     j = walk_json_dict(exclude_fields(self))
     d.update(j)
     return d
