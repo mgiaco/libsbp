@@ -106,9 +106,95 @@ maximum length of 255 bytes per message.
     d.update(j)
     return d
     
-SBP_MSG_USER_PWM = 0x0801
+SBP_MSG_USER_CMD = 0x0801
+class MsgUserCmd(SBP):
+  """SBP class for message MSG_USER_CMD (0x0801).
+
+  You can have MSG_USER_CMD inherit its fields directly
+  from an inherited SBP object, or construct it inline using a dict
+  of its fields.
+
+  
+  This message is used for user specific rpc.
+
+
+  Parameters
+  ----------
+  sbp : SBP
+    SBP parent object to inherit from.
+  cmd : int
+    command byte
+  data : int
+    data byte
+  sender : int
+    Optional sender ID, defaults to SENDER_ID (see sbp/msg.py).
+
+  """
+  _parser = Struct("MsgUserCmd",
+                   ULInt8('cmd'),
+                   ULInt8('data'),)
+  __slots__ = [
+               'cmd',
+               'data',
+              ]
+
+  def __init__(self, sbp=None, **kwargs):
+    if sbp:
+      super( MsgUserCmd,
+             self).__init__(sbp.msg_type, sbp.sender, sbp.length,
+                            sbp.payload, sbp.crc)
+      self.from_binary(sbp.payload)
+    else:
+      super( MsgUserCmd, self).__init__()
+      self.msg_type = SBP_MSG_USER_CMD
+      self.sender = kwargs.pop('sender', SENDER_ID)
+      self.cmd = kwargs.pop('cmd')
+      self.data = kwargs.pop('data')
+
+  def __repr__(self):
+    return fmt_repr(self)
+
+  @staticmethod
+  def from_json(s):
+    """Given a JSON-encoded string s, build a message object.
+
+    """
+    d = json.loads(s)
+    return MsgUserCmd.from_json_dict(d)
+
+  @staticmethod
+  def from_json_dict(d):
+    sbp = SBP.from_json_dict(d)
+    return MsgUserCmd(sbp, **d)
+
+ 
+  def from_binary(self, d):
+    """Given a binary payload d, update the appropriate payload fields of
+    the message.
+
+    """
+    p = MsgUserCmd._parser.parse(d)
+    for n in self.__class__.__slots__:
+      setattr(self, n, getattr(p, n))
+
+  def to_binary(self):
+    """Produce a framed/packed SBP message.
+
+    """
+    c = containerize(exclude_fields(self))
+    self.payload = MsgUserCmd._parser.build(c)
+    return self.pack()
+
+  def to_json_dict(self):
+    self.to_binary()
+    d = super( MsgUserCmd, self).to_json_dict()
+    j = walk_json_dict(exclude_fields(self))
+    d.update(j)
+    return d
+    
+SBP_MSG_USER_PWM = 0x0802
 class MsgUserPwm(SBP):
-  """SBP class for message MSG_USER_PWM (0x0801).
+  """SBP class for message MSG_USER_PWM (0x0802).
 
   You can have MSG_USER_PWM inherit its fields directly
   from an inherited SBP object, or construct it inline using a dict
@@ -197,7 +283,7 @@ class MsgUserPwm(SBP):
 
   def to_json_dict(self):
     self.to_binary()
-    d = super(MsgUserPwm, self).to_json_dict()
+    d = super( MsgUserPwm, self).to_json_dict()
     j = walk_json_dict(exclude_fields(self))
     d.update(j)
     return d
@@ -205,5 +291,6 @@ class MsgUserPwm(SBP):
 
 msg_classes = {
   0x0800: MsgUserData,
-  0x0801: MsgUserPwm,
+  0x0801: MsgUserCmd,
+  0x0802: MsgUserPwm,
 }

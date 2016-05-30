@@ -37,11 +37,22 @@ typedef struct __attribute__((packed)) {
 } msg_user_data_t;
 
 
+/** User cmd with data
+ *
+ * This message is used for user specific rpc.
+ */
+#define SBP_MSG_USER_CMD  0x0801
+typedef struct __attribute__((packed)) {
+  u8 cmd;     /**< command byte */
+  u8 data;    /**< data byte */
+} msg_user_cmd_t;
+
+
 /** User PWM data
  *
  * This message contain 4 pwm channels in percent.
  */
-#define SBP_MSG_USER_PWM  0x0801
+#define SBP_MSG_USER_PWM  0x0802
 typedef struct __attribute__((packed)) {
   u8 pwm0;    /**< pwm raw 0 */
   u8 pwm1;    /**< pwm raw 1 */

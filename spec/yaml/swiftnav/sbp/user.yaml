@@ -29,8 +29,21 @@ definitions:
             fill: u8
             desc: User data payload
 
- - MSG_USER_PWM:
+ - MSG_USER_CMD:
     id: 0x0801
+    short_desc: User cmd with data
+    desc: |
+        This message is used for user specific rpc.
+    fields:
+        - cmd:
+            type: u8
+            desc: command byte
+        - data:
+            type: u8 
+            desc: data byte
+               
+ - MSG_USER_PWM:
+    id: 0x0802
     short_desc: User PWM data
     desc: |
         This message contain 4 pwm channels in percent.
