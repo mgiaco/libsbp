@@ -46,7 +46,7 @@ definitions:
     id: 0x0802
     short_desc: User PWM data
     desc: |
-        This message contain 4 pwm channels in percent.
+        This message contain 4 pwm channels in percent (0-100).
     fields:
         - pwm0:
             type: u8

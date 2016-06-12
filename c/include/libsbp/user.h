@@ -50,7 +50,7 @@ typedef struct __attribute__((packed)) {
 
 /** User PWM data
  *
- * This message contain 4 pwm channels in percent.
+ * This message contain 4 pwm channels in percent (0-100).
  */
 #define SBP_MSG_USER_PWM  0x0802
 typedef struct __attribute__((packed)) {

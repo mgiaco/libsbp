@@ -201,7 +201,7 @@ class MsgUserPwm(SBP):
   of its fields.
 
   
-  This message contain 4 pwm channels in percent.
+  This message contain 4 pwm channels in percent (0-100).
 
 
   Parameters
